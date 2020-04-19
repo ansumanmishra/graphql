@@ -18,11 +18,26 @@ const users = [
   }
 ];
 
+const products = [
+  {
+    id: '1',
+    name: 'multivitamin',
+    user: '2'
+  },
+  {
+    id: '2',
+    name: 'protein bars',
+    user: '2'
+  }
+];
+
 // GraphQL Schema
 const typeDefs = gql`
   type Query {
     users(name: String): [User]
     user(id: String!): User
+    products: [Product]
+    productsByUser(userId: ID!): [Product]
   }
 
   type Mutation {
@@ -34,6 +49,12 @@ const typeDefs = gql`
     name: String!
     age: Int
     address: Address
+  }
+
+  type Product {
+    id: ID!
+    name: String!
+    user: User!
   }
 
   type Address {
@@ -57,7 +78,17 @@ const resolvers = {
       }
       return users;
     },
-    user: (_, { id }) => users.find(user => user.id === id)
+    user: (_, { id }) => users.find(user => user.id === id),
+    products: () => products,
+    productsByUser: (_, { userId }) => {
+      console.log(userId);
+      return products.filter(product => product.user === userId);
+    }
+  },
+  Product: {
+    user(parent, args, ctx, info) {
+      return users.find(user => user.id === parent.user);
+    }
   },
   Mutation: {
     createUser: (_, { data }) => {

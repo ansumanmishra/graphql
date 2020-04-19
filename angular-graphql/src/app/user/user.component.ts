@@ -6,27 +6,34 @@ import { UserService } from './user.service';
 @Component({
   selector: 'app-user',
   template: `
-    <app-search-user
-      (keywordChange)="handleKeywordChange($event)"
-    ></app-search-user>
-    <table class="table">
-      <thead>
-        <tr>
-          <td>Sl. No.</td>
-          <td>Name</td>
-          <td>Age</td>
-          <td>Address</td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of users | async; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ user.name }}</td>
-          <td>{{ user.age }}</td>
-          <td>{{ user.address?.city }}, {{ user.address?.country }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="row margin-bottom-2">
+      <div class="col-sm">
+        <app-search-user
+          (keywordChange)="handleKeywordChange($event)"
+        ></app-search-user>
+      </div>
+    </div>
+    <div class="row"></div>
+    <div class="row">
+      <table class="table">
+        <thead>
+          <tr>
+            <td>Sl. No.</td>
+            <td>Name</td>
+            <td>Age</td>
+            <td>Address</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users | async; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.age }}</td>
+            <td>{{ user.address?.city }}, {{ user.address?.country }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   `,
   styles: [``]
 })
