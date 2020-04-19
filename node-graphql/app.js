@@ -1,35 +1,10 @@
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
 
+const users = require('./data/users');
+const products = require('./data/products');
+
 const app = express();
-
-const users = [
-  {
-    id: '1',
-    name: 'Ansuman',
-    age: 25,
-    address: { city: 'bhubaneswar', country: 'india' }
-  },
-  {
-    id: '2',
-    name: 'Mishra',
-    age: 26,
-    address: { city: 'bern', country: 'switzerland' }
-  }
-];
-
-const products = [
-  {
-    id: '1',
-    name: 'multivitamin',
-    user: '2'
-  },
-  {
-    id: '2',
-    name: 'protein bars',
-    user: '2'
-  }
-];
 
 // GraphQL Schema
 const typeDefs = gql`
@@ -42,6 +17,7 @@ const typeDefs = gql`
 
   type Mutation {
     createUser(data: UserInput!): User!
+    createProduct(data: ProductInput!): Product!
   }
 
   type User {
@@ -66,6 +42,11 @@ const typeDefs = gql`
     name: String!
     age: Int
   }
+
+  input ProductInput {
+    name: String!
+    user: ID!
+  }
 `;
 
 // resolvers
@@ -80,10 +61,8 @@ const resolvers = {
     },
     user: (_, { id }) => users.find(user => user.id === id),
     products: () => products,
-    productsByUser: (_, { userId }) => {
-      console.log(userId);
-      return products.filter(product => product.user === userId);
-    }
+    productsByUser: (_, { userId }) =>
+      products.filter(product => product.user === userId)
   },
   Product: {
     user(parent, args, ctx, info) {
@@ -97,13 +76,22 @@ const resolvers = {
         name: data.name,
         age: data.age
       });
+      return data;
+    },
+    createProduct: (parent, args, ctx, info) => {
+      const data = args.data;
 
+      products.push({
+        id: Math.random(),
+        name: data.name,
+        user: data.user
+      });
       return data;
     }
   }
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers, playground: true });
 server.applyMiddleware({ app });
 
 app.listen('3000', () => {
