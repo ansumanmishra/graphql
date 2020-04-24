@@ -8,6 +8,8 @@ const GET_PRODUCTS = gql`
   {
     products {
       name
+      price
+      description
       user {
         name
       }
@@ -18,8 +20,22 @@ const GET_PRODUCTS = gql`
 @Component({
   selector: 'app-product-list',
   template: `
-    <div *ngFor="let product of products$ | async">
-      <div>{{ product.name }}</div>
+    <div class="row">
+      <div class="col-sm" *ngFor="let product of products$ | async">
+        <div class="card" style="width: 18rem;">
+          <img class="card-img-top" src="..." alt="Product image" />
+          <div class="card-body">
+            <h5 class="card-title">
+              {{ product.name }} <br />
+              {{ product.price }}
+            </h5>
+            <p class="card-text">
+              {{ product.description }}
+            </p>
+            <a href="#" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+      </div>
     </div>
   `,
   styles: [``],
