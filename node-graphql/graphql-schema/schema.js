@@ -11,6 +11,19 @@ const typeDefs = gql`
   type Mutation {
     createUser(data: UserInput!): User!
     createProduct(data: ProductInput!): Product!
+    createRating(data: RatingInput): Rating!
+  }
+
+  type Rating {
+    rating: Int
+    product: ID
+    user: ID
+  }
+
+  input RatingInput {
+    rating: Int!
+    product: ID!
+    user: ID!
   }
 
   type User {
@@ -26,6 +39,7 @@ const typeDefs = gql`
     user: User!
     price: Float!
     description: String!
+    ratings: [Rating]
   }
 
   type Address {

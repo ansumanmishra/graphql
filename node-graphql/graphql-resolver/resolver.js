@@ -1,5 +1,6 @@
 const User = require('../model/user.model');
 const Product = require('../model/product.model');
+const Rating = require('../model/rating.model');
 
 const resolvers = {
   Query: {
@@ -36,6 +37,10 @@ const resolvers = {
     async user(parent, args, ctx, info) {
       const user = await User.findById(parent.user);
       return user;
+    },
+    async ratings(parent, args, ctx, info) {
+      const ratings = await Rating.find({ product: parent.id });
+      return ratings;
     }
   },
   Mutation: {
@@ -58,6 +63,17 @@ const resolvers = {
       });
       const product = await newProduct.save();
       return product;
+    },
+    createRating: async (parent, args, ctx, info) => {
+      const data = args.data;
+      const newRating = new Rating({
+        rating: data.rating,
+        product: data.product,
+        user: data.user
+      });
+
+      const rating = await newRating.save();
+      return rating;
     }
   }
 };
