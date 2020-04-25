@@ -1,6 +1,5 @@
-//const users = require('../data/users');
-const products = require('../data/products');
 const User = require('../model/user.model');
+const Product = require('../model/product.model');
 
 const resolvers = {
   Query: {
@@ -24,9 +23,14 @@ const resolvers = {
       const user = await User.findById(id);
       return user;
     },
-    products: () => products,
-    productsByUser: (_, { userId }) =>
-      products.filter(product => product.user === userId)
+    products: async () => {
+      const products = await Product.find({});
+      return products;
+    },
+    productsByUser: async (_, { userId }) => {
+      const products = await Product.find({ user: userId });
+      return products;
+    }
   },
   Product: {
     async user(parent, args, ctx, info) {
@@ -35,22 +39,25 @@ const resolvers = {
     }
   },
   Mutation: {
-    createUser: (_, { data }) => {
-      users.push({
-        id: '3',
+    createUser: async (_, { data }) => {
+      const newuser = new User({
         name: data.name,
-        age: data.age
+        age: data.age,
+        address: data.address
       });
-      return data;
+      const user = await newuser.save();
+      return user;
     },
-    createProduct: (parent, args, ctx, info) => {
+    createProduct: async (parent, args, ctx, info) => {
       const data = args.data;
-      products.push({
-        id: Math.random(),
+      const newProduct = new Product({
         name: data.name,
-        user: data.user
+        user: data.user,
+        price: data.price,
+        description: data.description
       });
-      return data;
+      const product = await newProduct.save();
+      return product;
     }
   }
 };

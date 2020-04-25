@@ -1,23 +1,9 @@
 const express = require('express');
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
 
 const db = require('./db');
 const typeDefs = require('./graphql-schema/schema');
 const resolvers = require('./graphql-resolver/resolver');
-const User = require('./model/user.model');
-
-// create user
-const newuser = new User({
-  name: 'Ansuman',
-  age: 25,
-  address: { city: 'delhi', country: 'india' }
-});
-// newuser.save().then(res => {
-//   console.log(res);
-// });
-
-const users = require('./data/users');
-const products = require('./data/products');
 
 const app = express();
 

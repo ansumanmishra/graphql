@@ -33,9 +33,15 @@ const typeDefs = gql`
     country: String
   }
 
+  input AddressInput {
+    city: String
+    country: String
+  }
+
   input UserInput {
     name: String!
     age: Int
+    address: AddressInput
   }
 
   input ProductInput {
