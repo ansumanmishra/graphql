@@ -54,6 +54,7 @@ const resolvers = {
       return user;
     },
     createProduct: async (parent, args, ctx, info) => {
+      console.log('hi');
       const data = args.data;
       const newProduct = new Product({
         name: data.name,
