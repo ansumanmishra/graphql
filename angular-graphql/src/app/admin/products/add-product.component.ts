@@ -13,6 +13,7 @@ export type ProductInput = {
   name: string;
   description: string;
   price: number;
+  image: HTMLImageElement;
 };
 
 export const CREATE_PRODUCT = gql`
@@ -41,11 +42,20 @@ export const CREATE_PRODUCT = gql`
         />
       </div>
       <div class="form-group">
+        <label for="image"></label>
+        <input
+          type="file"
+          name="image"
+          id="image"
+          (change)="imageUpload($event)"
+        />
+      </div>
+      <div class="form-group">
         <label for="description"></label>
         <textarea
           name="description"
-          cols="30"
-          rows="10"
+          cols="60"
+          rows="5"
           id="description"
           placeholder="Add product description"
           formControlName="description"
@@ -79,15 +89,24 @@ export class AddProductComponent {
       name: [''],
       description: [''],
       price: [''],
-      user: ['5ea34f71313f9b970b5f289c']
+      user: ['5ea34f71313f9b970b5f289c'],
+      image: ['']
     });
+  }
+
+  imageUpload(event) {
+    const file = event.target.files[0];
+    this.form.patchValue({
+      image: file
+    });
+    console.log(this.form.value);
   }
 
   addProduct() {
     const data: ProductInput = this.mapFormValue(this.form.value);
     this.productService.addProduct(CREATE_PRODUCT, data).subscribe(res => {
       this.productAdded.emit(true);
-      this.form.patchValue({ name: '', description: '', price: '' });
+      this.form.patchValue({ name: '', description: '', price: '', image: '' });
     });
   }
 
@@ -96,7 +115,8 @@ export class AddProductComponent {
       name: formValue.name,
       description: formValue.description,
       user: formValue.user,
-      price: parseInt(formValue.price, 10)
+      price: parseInt(formValue.price, 10),
+      image: formValue.image
     };
   }
 }

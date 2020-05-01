@@ -39,6 +39,7 @@ const typeDefs = gql`
     user: User!
     price: Float!
     description: String!
+    image: String
     ratings: [Rating]
   }
 
@@ -63,6 +64,7 @@ const typeDefs = gql`
     user: ID!
     price: Float!
     description: String!
+    image: Upload
   }
 `;
 

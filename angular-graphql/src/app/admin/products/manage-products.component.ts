@@ -11,6 +11,7 @@ const GET_PRODUCTS = gql`
       description
       price
       id
+      image
       user {
         name
       }
@@ -29,6 +30,7 @@ const GET_PRODUCTS = gql`
           <th>Product name</th>
           <th>Product description</th>
           <th>Price</th>
+          <th>Image</th>
           <th>Created by</th>
         </tr>
       </thead>
@@ -38,6 +40,14 @@ const GET_PRODUCTS = gql`
           <td>{{ product.name }}</td>
           <td>{{ product.description }}</td>
           <td>{{ product.price }}</td>
+          <td>
+            <img
+              src="http://localhost:3000/images/{{ product.image }}"
+              alt=""
+              width="50"
+              height="50"
+            />
+          </td>
           <td>{{ product.user.name }}</td>
         </tr>
       </tbody>

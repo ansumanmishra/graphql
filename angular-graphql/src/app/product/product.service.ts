@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { map, catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs/internal/observable/throwError';
-import { of } from 'zen-observable';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +20,12 @@ export class ProductService {
   }
 
   addProduct(mutation, data) {
-    return this.apollo.mutate({ mutation, variables: { data } });
+    return this.apollo.mutate({
+      mutation,
+      variables: { data },
+      context: {
+        useMultipart: true
+      }
+    });
   }
 }

@@ -1,3 +1,6 @@
+const path = require('path');
+const { createWriteStream } = require('fs');
+
 const User = require('../model/user.model');
 const Product = require('../model/product.model');
 const Rating = require('../model/rating.model');
@@ -54,13 +57,23 @@ const resolvers = {
       return user;
     },
     createProduct: async (parent, args, ctx, info) => {
-      console.log('hi');
+      const file = await args.data.image;
+      const { createReadStream, filename, mimetype, encoding } = file;
+      await new Promise(res =>
+        createReadStream()
+          .pipe(
+            createWriteStream(path.join(__dirname, '../uploads/', filename))
+          )
+          .on('close', res)
+      );
+
       const data = args.data;
       const newProduct = new Product({
         name: data.name,
         user: data.user,
         price: data.price,
-        description: data.description
+        description: data.description,
+        image: filename
       });
       const product = await newProduct.save();
       return product;
