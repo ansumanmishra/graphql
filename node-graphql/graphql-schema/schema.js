@@ -12,6 +12,7 @@ const typeDefs = gql`
     createUser(data: UserInput!): User!
     createProduct(data: ProductInput!): Product!
     createRating(data: RatingInput): Rating!
+    deleteProduct(data: ProductDeleteInput!): Product
   }
 
   type Rating {
@@ -65,6 +66,10 @@ const typeDefs = gql`
     price: Float!
     description: String!
     image: Upload
+  }
+
+  input ProductDeleteInput {
+    id: ID!
   }
 `;
 

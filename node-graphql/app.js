@@ -10,7 +10,11 @@ const app = express();
 
 app.use('/images', express.static(path.join(__dirname, './uploads/')));
 
-const server = new ApolloServer({ typeDefs, resolvers, playground: true });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  playground: true
+});
 server.applyMiddleware({ app });
 
 app.listen('3000', () => {

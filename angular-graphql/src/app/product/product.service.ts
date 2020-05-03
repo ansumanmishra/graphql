@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { map, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs/internal/observable/throwError';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,12 +20,33 @@ export class ProductService {
   }
 
   addProduct(mutation, data) {
-    return this.apollo.mutate({
-      mutation,
-      variables: { data },
-      context: {
-        useMultipart: true
-      }
-    });
+    return this.apollo
+      .mutate({
+        mutation,
+        variables: { data },
+        context: {
+          useMultipart: true
+        }
+      })
+      .pipe(
+        catchError(err => {
+          console.log(err);
+          return throwError(err);
+        })
+      );
+  }
+
+  deleteProduct(mutation, id) {
+    return this.apollo
+      .mutate({
+        mutation,
+        variables: { data: { id } }
+      })
+      .pipe(
+        catchError(err => {
+          console.log(err);
+          return throwError(err);
+        })
+      );
   }
 }

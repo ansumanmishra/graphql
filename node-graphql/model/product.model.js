@@ -8,7 +8,10 @@ const ProductSchema = new Schema({
   name: String,
   user: String,
   price: Number,
-  description: String,
+  description: {
+    type: String,
+    minlength: 5
+  },
   image: String
 });
 

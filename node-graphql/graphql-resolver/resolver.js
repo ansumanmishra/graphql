@@ -59,13 +59,15 @@ const resolvers = {
     createProduct: async (parent, args, ctx, info) => {
       const file = await args.data.image;
       const { createReadStream, filename, mimetype, encoding } = file;
-      await new Promise(res =>
-        createReadStream()
-          .pipe(
-            createWriteStream(path.join(__dirname, '../uploads/', filename))
-          )
-          .on('close', res)
-      );
+      if (filename) {
+        await new Promise(res =>
+          createReadStream()
+            .pipe(
+              createWriteStream(path.join(__dirname, '../uploads/', filename))
+            )
+            .on('close', res)
+        );
+      }
 
       const data = args.data;
       const newProduct = new Product({
@@ -75,8 +77,22 @@ const resolvers = {
         description: data.description,
         image: filename
       });
-      const product = await newProduct.save();
-      return product;
+      try {
+        const product = await newProduct.save();
+        return product;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    deleteProduct: async (parent, args, ctx, info) => {
+      const _id = args.data.id;
+      try {
+        const deleted = await Product.findByIdAndRemove(_id);
+        console.log(deleted);
+        return args.data._id;
+      } catch (err) {
+        throw new Error(err);
+      }
     },
     createRating: async (parent, args, ctx, info) => {
       const data = args.data;

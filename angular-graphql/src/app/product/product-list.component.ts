@@ -10,6 +10,7 @@ const GET_PRODUCTS = gql`
       name
       price
       description
+      image
       user {
         name
       }
@@ -23,7 +24,11 @@ const GET_PRODUCTS = gql`
     <div class="row">
       <div class="col-sm" *ngFor="let product of products$ | async">
         <div class="card" style="width: 18rem;">
-          <img class="card-img-top" src="..." alt="Product image" />
+          <img
+            class="card-img-top"
+            src="http://localhost:3000/images/{{ product.image }}"
+            alt="Product image"
+          />
           <div class="card-body">
             <h5 class="card-title">
               {{ product.name }} <br />

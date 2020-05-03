@@ -19,6 +19,14 @@ const GET_PRODUCTS = gql`
   }
 `;
 
+const DELETE_PRODUCT = gql`
+  mutation deleteProductMutation($data: ProductDeleteInput!) {
+    deleteProduct(data: $data) {
+      id
+    }
+  }
+`;
+
 @Component({
   selector: 'app-manage-products',
   template: `
@@ -49,6 +57,11 @@ const GET_PRODUCTS = gql`
             />
           </td>
           <td>{{ product.user.name }}</td>
+          <td>
+            <a href="javascript: void(0)" (click)="deleteProduct(product.id)"
+              >Delete</a
+            >
+          </td>
         </tr>
       </tbody>
     </table>
@@ -63,6 +76,13 @@ export class ManageProductsComponent {
     this.products$ = this.reloadData$.pipe(
       startWith(undefined),
       switchMap(() => this.productService.getProducts(GET_PRODUCTS))
+    );
+  }
+
+  deleteProduct(productId: string) {
+    this.productService.deleteProduct(DELETE_PRODUCT, productId).subscribe(
+      res => this.reloadData$.next(),
+      err => console.log(err)
     );
   }
 }
