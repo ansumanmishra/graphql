@@ -3,11 +3,17 @@ import {
   ChangeDetectionStrategy,
   Output,
   EventEmitter,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  Input,
+  SimpleChanges,
+  OnInit,
+  OnChanges
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/product/product.service';
 import gql from 'graphql-tag';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 export type ProductInput = {
   user: string;
@@ -20,6 +26,15 @@ export type ProductInput = {
 export const CREATE_PRODUCT = gql`
   mutation createProductMutation($data: ProductInput!) {
     createProduct(data: $data) {
+      name
+      description
+    }
+  }
+`;
+
+const EDIT_PRODUCT = gql`
+  mutation editProductMutation($data: ProductInput!, $id: ID!) {
+    editProduct(data: $data, id: $id) {
       name
       description
     }
@@ -56,6 +71,12 @@ export const CREATE_PRODUCT = gql`
           name="image"
           id="image"
           (change)="imageUpload($event)"
+        />
+        <img
+          src="http://localhost:3000/images/{{ form.get('image').value }}"
+          alt=""
+          width="50"
+          height="50"
         />
       </div>
       <div class="form-group">
@@ -113,9 +134,10 @@ export const CREATE_PRODUCT = gql`
   styles: [``],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddProductComponent {
+export class AddProductComponent implements OnChanges {
   errors: string[];
   form: FormGroup;
+  @Input() productData;
   @Output() productAdded = new EventEmitter<boolean>();
 
   constructor(
@@ -130,6 +152,20 @@ export class AddProductComponent {
       user: ['5ea34f71313f9b970b5f289c', [Validators.required]],
       image: ['']
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes.productData.previousValue !== changes.productData.currentValue
+    ) {
+      this.form.setValue({
+        name: this.productData.name,
+        description: this.productData.description,
+        price: this.productData.price,
+        user: this.productData.user.id,
+        image: this.productData.image
+      });
+    }
   }
 
   get formNames() {
@@ -152,8 +188,9 @@ export class AddProductComponent {
     if (!this.form.valid) {
       return;
     }
+    const query = this.productData.id ? EDIT_PRODUCT : CREATE_PRODUCT;
     const data: ProductInput = this.mapFormValue(this.form.value);
-    this.productService.addProduct(CREATE_PRODUCT, data).subscribe(
+    this.productService.addProduct(query, data, this.productData.id).subscribe(
       res => {
         this.productAdded.emit(true);
         this.form.patchValue({

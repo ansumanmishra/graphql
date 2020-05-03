@@ -13,6 +13,7 @@ const typeDefs = gql`
     createProduct(data: ProductInput!): Product!
     createRating(data: RatingInput): Rating!
     deleteProduct(data: ProductDeleteInput!): Product
+    editProduct(data: ProductInput!, id: ID!): Product
   }
 
   type Rating {

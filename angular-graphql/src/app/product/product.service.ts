@@ -19,11 +19,13 @@ export class ProductService {
       );
   }
 
-  addProduct(mutation, data) {
+  addProduct(mutation, data, id = null) {
+    const variables = id ? { data, id } : { data };
+    console.log(data, id);
     return this.apollo
       .mutate({
         mutation,
-        variables: { data },
+        variables,
         context: {
           useMultipart: true
         }

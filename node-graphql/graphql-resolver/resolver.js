@@ -88,8 +88,19 @@ const resolvers = {
       const _id = args.data.id;
       try {
         const deleted = await Product.findByIdAndRemove(_id);
-        console.log(deleted);
-        return args.data._id;
+        return deleted;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    editProduct: async (parent, args, ctx, info) => {
+      try {
+        const updateProduct = await Product.findByIdAndUpdate(
+          args.id,
+          args.data,
+          { new: true }
+        );
+        return updateProduct;
       } catch (err) {
         throw new Error(err);
       }

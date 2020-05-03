@@ -1,8 +1,12 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import gql from 'graphql-tag';
 import { ProductService } from 'src/app/product/product.service';
-import { Observable, Subject } from 'rxjs';
-import { startWith, switchMap } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { startWith, switchMap, filter, tap, map } from 'rxjs/operators';
 
 const GET_PRODUCTS = gql`
   query {
@@ -14,6 +18,7 @@ const GET_PRODUCTS = gql`
       image
       user {
         name
+        id
       }
     }
   }
@@ -30,7 +35,10 @@ const DELETE_PRODUCT = gql`
 @Component({
   selector: 'app-manage-products',
   template: `
-    <app-add-product (productAdded)="reloadData$.next()"></app-add-product>
+    <app-add-product
+      [productData]="productData"
+      (productAdded)="reloadData$.next()"
+    ></app-add-product>
     <table class="table table-striped">
       <thead>
         <tr>
@@ -58,6 +66,10 @@ const DELETE_PRODUCT = gql`
           </td>
           <td>{{ product.user.name }}</td>
           <td>
+            <a href="javascript: void(0)" (click)="editProduct(product.id)"
+              >Edit</a
+            >
+            &nbsp;
             <a href="javascript: void(0)" (click)="deleteProduct(product.id)"
               >Delete</a
             >
@@ -71,8 +83,12 @@ const DELETE_PRODUCT = gql`
 export class ManageProductsComponent {
   products$: Observable<any>;
   reloadData$ = new Subject<void>();
+  productData;
 
-  constructor(private productService: ProductService) {
+  constructor(
+    private productService: ProductService,
+    private cd: ChangeDetectorRef
+  ) {
     this.products$ = this.reloadData$.pipe(
       startWith(undefined),
       switchMap(() => this.productService.getProducts(GET_PRODUCTS))
@@ -84,5 +100,18 @@ export class ManageProductsComponent {
       res => this.reloadData$.next(),
       err => console.log(err)
     );
+  }
+
+  editProduct(productId: string) {
+    this.products$
+      .pipe(
+        map(arr => {
+          return arr.filter(res => res.id === productId);
+        })
+      )
+      .subscribe(product => {
+        this.productData = product[0];
+        this.cd.detectChanges();
+      });
   }
 }
