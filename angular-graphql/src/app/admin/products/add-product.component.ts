@@ -199,10 +199,10 @@ export class AddProductComponent implements OnChanges {
           price: '',
           image: ''
         });
+        this.productData = [];
       },
       err => {
         this.errors = this.parseServrError(err.errors);
-        console.log(this.errors);
         this.cd.detectChanges();
       }
     );
