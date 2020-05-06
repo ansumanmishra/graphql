@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+.navbar {
+  background: #66152d;
+}
+
+body {
+  background: #a8294a;
+}
+
+.btn-primary {
+  color: #000;
+  background-color: #efcd73;
+  border-color: #eabe49;
+}
+
+.navbar-light .navbar-brand,
+.navbar-light .navbar-nav .nav-link {
+  color: white;
+}
+
+.navbar-light .navbar-nav .active > .nav-link {
+  color: white;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled):hover,
+.btn-primary.focus,
+.btn-primary:focus {
+  color: #000;
+  background-color: #e0a813;
+  border-color: #eabe49;
+  box-shadow: 0 0 0 0.2rem #d8c9a2;
+}
+
+footer {
+  background: #972237;
+  color: white;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+}

@@ -3,7 +3,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 @Component({
   selector: 'app-header',
   template: `
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
       <a class="navbar-brand" routerLink="/">EKart</a>
       <button
         class="navbar-toggler"
@@ -35,7 +35,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
             placeholder="Search"
             aria-label="Search"
           />
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+          <button class="btn btn-primary my-2 my-sm-0" type="submit">
             Search
           </button>
         </form>

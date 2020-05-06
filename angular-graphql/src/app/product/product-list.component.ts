@@ -22,12 +22,17 @@ const GET_PRODUCTS = gql`
   selector: 'app-product-list',
   template: `
     <div class="row">
-      <div class="col-sm" *ngFor="let product of products$ | async">
+      <div class="col-sm mb-4" *ngFor="let product of products$ | async">
         <div class="card" style="width: 18rem;">
           <img
             class="card-img-top"
-            src="http://localhost:3000/images/{{ product.image }}"
-            alt="Product image"
+            [src]="
+              product.image
+                ? 'http://localhost:3000/images/' + product.image
+                : 'assets/image-not-found.png'
+            "
+            alt="Product"
+            style="width:286px;height:190px;"
           />
           <div class="card-body">
             <h5 class="card-title">
