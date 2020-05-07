@@ -39,45 +39,54 @@ const DELETE_PRODUCT = gql`
       [productData]="productData"
       (productAdded)="reloadData$.next()"
     ></app-add-product>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Sl. no</th>
-          <th>Product name</th>
-          <th>Product description</th>
-          <th>Price</th>
-          <th>Image</th>
-          <th>Created by</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let product of products$ | async; let i = index">
-          <td>{{ i + 1 }}</td>
-          <td>{{ product.name }}</td>
-          <td>{{ product.description }}</td>
-          <td>{{ product.price }}</td>
-          <td>
-            <img
-              src="http://localhost:3000/images/{{ product.image }}"
-              alt=""
-              width="50"
-              height="50"
-            />
-          </td>
-          <td>{{ product.user.name }}</td>
-          <td>
-            <a href="javascript: void(0)" (click)="editProduct(product.id)"
-              >Edit</a
-            >
-            &nbsp;
-            <a href="javascript: void(0)" (click)="deleteProduct(product.id)"
-              >Delete</a
-            >
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="product-listing">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Sl. no</th>
+            <th>Product name</th>
+            <th>Product description</th>
+            <th>Price</th>
+            <th>Image</th>
+            <th>Created by</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let product of products$ | async; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.price }}</td>
+            <td>
+              <img
+                src="http://localhost:3000/images/{{ product.image }}"
+                alt=""
+                width="50"
+                height="50"
+              />
+            </td>
+            <td>{{ product.user.name }}</td>
+            <td>
+              <a href="javascript: void(0)" (click)="editProduct(product.id)"
+                >Edit</a
+              >
+              &nbsp;
+              <a href="javascript: void(0)" (click)="deleteProduct(product.id)"
+                >Delete</a
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   `,
+  styles: [
+    `
+      .product-listing {
+        margin-top: 20px;
+      }
+    `
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageProductsComponent {

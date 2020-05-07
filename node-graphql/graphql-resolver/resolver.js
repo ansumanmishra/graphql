@@ -1,5 +1,5 @@
 const path = require('path');
-const { createWriteStream } = require('fs');
+const { createWriteStream, unlink } = require('fs');
 
 const User = require('../model/user.model');
 const Product = require('../model/product.model');
@@ -94,10 +94,43 @@ const resolvers = {
       }
     },
     editProduct: async (parent, args, ctx, info) => {
+      const file = await args.data.image;
+      const { createReadStream, filename, mimetype, encoding } = file;
+      // Get current image and delete
+      const product = await Product.findById(args.id);
+      const productImage = product.image;
+
+      if (filename) {
+        // Delete image from folder
+        if (productImage) {
+          const imagePath = path.join(__dirname, '../uploads/', productImage);
+          try {
+            unlink(imagePath);
+          } catch (err) {
+            console.log('Product image could not be deleted');
+          }
+        }
+
+        await new Promise(res =>
+          createReadStream()
+            .pipe(
+              createWriteStream(path.join(__dirname, '../uploads/', filename))
+            )
+            .on('close', res)
+        );
+      }
       try {
+        const newProduct = {
+          name: args.data.name,
+          user: args.data.user,
+          price: args.data.price,
+          description: args.data.description,
+          image: filename || productImage
+        };
+
         const updateProduct = await Product.findByIdAndUpdate(
           args.id,
-          args.data,
+          newProduct,
           { new: true }
         );
         return updateProduct;

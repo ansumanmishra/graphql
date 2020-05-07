@@ -37,7 +37,7 @@ const GET_PRODUCTS = gql`
           <div class="card-body">
             <h5 class="card-title">
               {{ product.name }} <br />
-              {{ product.price }}
+              {{ product.price | currency: 'CHF' }}
             </h5>
             <p class="card-text">
               {{ product.description }}
