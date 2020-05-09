@@ -32,8 +32,11 @@ const GET_PRODUCTS = gql`
       <div class="col-sm text-center" *ngIf="!(products$ | async)">
         loading products...
       </div>
-      <div class="col-sm mb-4" *ngFor="let product of products$ | async">
-        <div class="card" style="width: 18rem;">
+      <div
+        class="col-sm col-md-4 mb-4"
+        *ngFor="let product of products$ | async"
+      >
+        <div class="card">
           <img
             class="card-img-top"
             [src]="
@@ -42,7 +45,7 @@ const GET_PRODUCTS = gql`
                 : 'assets/image-not-found.png'
             "
             alt="Product"
-            style="width:286px;height:190px;"
+            style="width:345px; height: 230px;"
           />
           <div class="card-body">
             <h5 class="card-title">
