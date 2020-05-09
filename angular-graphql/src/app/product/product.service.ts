@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { map, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { throwError, Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
+  private productKeywordSubject$: Subject<string> = new Subject();
+  productKeyword$ = this.productKeywordSubject$.asObservable();
+
   constructor(private apollo: Apollo) {}
+
   getProducts(query) {
     return this.apollo
       .watchQuery({ query, fetchPolicy: 'network-only' })
@@ -17,6 +21,10 @@ export class ProductService {
           return throwError(err);
         })
       );
+  }
+
+  setKeyword(keyword: string) {
+    this.productKeywordSubject$.next(keyword);
   }
 
   addProduct(mutation, data, id = null) {

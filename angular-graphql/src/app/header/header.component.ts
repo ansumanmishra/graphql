@@ -1,4 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Observable } from 'apollo-link';
+import { ProductService } from '../product/product.service';
 
 @Component({
   selector: 'app-header',
@@ -28,12 +30,16 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
             <a class="nav-link" routerLink="/admin">Login</a>
           </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
+        <form
+          class="form-inline my-2 my-lg-0"
+          (ngSubmit)="productService.setKeyword(keyword.value)"
+        >
           <input
             class="form-control mr-sm-2"
             type="search"
             placeholder="Search"
             aria-label="Search"
+            #keyword
           />
           <button class="btn btn-primary my-2 my-sm-0" type="submit">
             Search
@@ -45,4 +51,6 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
   styles: [``],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HeaderComponent {}
+export class HeaderComponent {
+  constructor(private productService: ProductService) {}
+}

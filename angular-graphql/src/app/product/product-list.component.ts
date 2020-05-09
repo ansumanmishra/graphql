@@ -1,8 +1,9 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import gql from 'graphql-tag';
 
 import { ProductService } from './product.service';
+import { switchMap, startWith, map } from 'rxjs/operators';
 
 const GET_PRODUCTS = gql`
   {
@@ -22,6 +23,15 @@ const GET_PRODUCTS = gql`
   selector: 'app-product-list',
   template: `
     <div class="row">
+      <!-- <div
+        class="col-sm text-center"
+        *ngIf="products$ && (products$ | async)?.length < 1"
+      >
+        Oops! No product(s) found!
+      </div>-->
+      <div class="col-sm text-center" *ngIf="!(products$ | async)">
+        loading products...
+      </div>
       <div class="col-sm mb-4" *ngFor="let product of products$ | async">
         <div class="card" style="width: 18rem;">
           <img
@@ -52,9 +62,24 @@ const GET_PRODUCTS = gql`
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductList implements OnInit {
-  products$: Observable<any>;
+  products$: Observable<any> = null;
   constructor(private productService: ProductService) {}
   ngOnInit(): void {
-    this.products$ = this.productService.getProducts(GET_PRODUCTS);
+    this.products$ = this.productService.productKeyword$.pipe(
+      startWith(null),
+      switchMap(keyword => {
+        if (keyword) {
+          return this.products$.pipe(
+            map(products => {
+              return products.filter(
+                product =>
+                  product.name.toLowerCase().indexOf(keyword.toLowerCase()) > -1
+              );
+            })
+          );
+        }
+        return this.productService.getProducts(GET_PRODUCTS);
+      })
+    );
   }
 }
