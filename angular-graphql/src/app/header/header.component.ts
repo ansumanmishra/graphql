@@ -30,6 +30,8 @@ import { ProductService } from '../product/product.service';
             <a class="nav-link" routerLink="/admin">Login</a>
           </li>
         </ul>
+        <a class="nav-link">{{ (cartItems$ | async)?.length }}</a>
+
         <form
           class="form-inline my-2 my-lg-0"
           (ngSubmit)="productService.setKeyword(keyword.value)"
@@ -52,5 +54,6 @@ import { ProductService } from '../product/product.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
+  cartItems$ = this.productService.cart$;
   constructor(private productService: ProductService) {}
 }

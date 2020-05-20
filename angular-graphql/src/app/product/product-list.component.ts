@@ -1,13 +1,19 @@
-import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  OnInit,
+  ChangeDetectorRef
+} from '@angular/core';
 import { Observable, of } from 'rxjs';
 import gql from 'graphql-tag';
 
 import { ProductService } from './product.service';
-import { switchMap, startWith, map } from 'rxjs/operators';
+import { switchMap, startWith, map, tap } from 'rxjs/operators';
 
 const GET_PRODUCTS = gql`
   {
     products {
+      id
       name
       price
       description
@@ -55,7 +61,13 @@ const GET_PRODUCTS = gql`
             <p class="card-text">
               {{ product.description }}
             </p>
-            <a href="#" class="btn btn-primary">View Details</a>
+            <a href="#" class="btn btn-primary">View Details</a> &nbsp;
+            <a
+              href="javascript:void(0)"
+              class="btn btn-primary"
+              (click)="addCart(product.id)"
+              >Add to Cart</a
+            >
           </div>
         </div>
       </div>
@@ -66,7 +78,11 @@ const GET_PRODUCTS = gql`
 })
 export class ProductList implements OnInit {
   products$: Observable<any> = null;
-  constructor(private productService: ProductService) {}
+
+  constructor(
+    private productService: ProductService,
+    private cd: ChangeDetectorRef
+  ) {}
   ngOnInit(): void {
     this.products$ = this.productService.productKeyword$.pipe(
       startWith(null),
@@ -84,5 +100,20 @@ export class ProductList implements OnInit {
         return this.productService.getProducts(GET_PRODUCTS);
       })
     );
+  }
+
+  addCart(productId: string) {
+    this.productService.addToCart(productId);
+
+    // const cartProducts = localStorage.getItem('products');
+    // if (cartProducts) {
+    //   const a = JSON.parse(cartProducts);
+    //   console.log(a);
+    //   a.push(productId);
+    //   localStorage.setItem('products', a);
+    // } else {
+    //   localStorage.setItem('products', JSON.stringify([productId]));
+    // }
+    // console.log(JSON.parse(localStorage.getItem('products')));
   }
 }

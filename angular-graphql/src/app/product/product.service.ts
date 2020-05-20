@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { map, catchError } from 'rxjs/operators';
-import { throwError, Observable, Subject } from 'rxjs';
+import { map, catchError, tap, scan } from 'rxjs/operators';
+import { throwError, Observable, merge, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
+  private cartItems = [];
   private productKeywordSubject$: Subject<string> = new Subject();
   productKeyword$ = this.productKeywordSubject$.asObservable();
+
+  private cartSubject$: Subject<any> = new Subject();
+  cart$ = this.cartSubject$.asObservable();
 
   constructor(private apollo: Apollo) {}
 
@@ -58,5 +62,12 @@ export class ProductService {
           return throwError(err);
         })
       );
+  }
+
+  addToCart(productId: string) {
+    if (!this.cartItems.includes(productId)) {
+      this.cartItems.push(productId);
+      this.cartSubject$.next(this.cartItems);
+    }
   }
 }
